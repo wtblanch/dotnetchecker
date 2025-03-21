@@ -148,15 +148,15 @@ function Log-DotNetVersionsToCsv {
 # Function to create an Azure DevOps user story via the REST API, including only EOL versions.
 function Add-AzureDevOpsUserStory {
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory=$true)]
         [string]$Organization,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory=$true)]
         [string]$Project,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory=$true)]
         [string]$PAT,
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory=$false)]
         [string]$Title,
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory=$false)]
         [string]$Description
     )
 
@@ -182,8 +182,9 @@ function Add-AzureDevOpsUserStory {
 
     # Create the basic authentication header (PAT is used as the password).
     $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$PAT"))
-    # URL-encode "User Story" as "User%20Story".
-    $url = "https://dev.azure.com/$Organization/$Project/_apis/wit/workitems/\$User%20Story?api-version=6.0"
+
+    # Build the URL using string concatenation to avoid variable expansion in the literal.
+    $url = "https://$Organization.visualstudio.com/$Project/_apis/wit/workitems/" + "%24User%20Story?api-version=6.0"
     
     # Build the JSON patch document.
     $body = @(
@@ -211,6 +212,7 @@ function Add-AzureDevOpsUserStory {
         Write-Error "Error creating Azure DevOps user story: $_"
     }
 }
+
 
 #endregion
 
